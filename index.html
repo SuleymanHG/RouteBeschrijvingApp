@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schiphol Navigatie</title>
+    <meta name="description" content="Navigatie-app voor nieuwe Schiphol medewerkers">
+    <meta name="theme-color" content="#003366">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Schiphol Nav">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* Header styles */
+        .header {
+            background: linear-gradient(135deg, #003366, #0066cc);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover,
+        .back-button:focus {
+            background: rgba(255,255,255,0.3);
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Route selection screen */
+        .route-selection h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #003366;
+            font-size: 1.8rem;
+        }
+
+        .route-list {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+
+        .route-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 100%;
+            font-size: 1.1rem;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .route-card:hover,
+        .route-card:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .route-card:active {
+            transform: translateY(0);
+        }
+
+        /* Route details screen */
+        .route-details {
+            display: none;
+        }
+
+        .route-details.active {
+            display: block;
+        }
+
+        .route-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .route-title {
+            color: #003366;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-counter {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .step-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .nav-button:hover,
+        .nav-button:focus {
+            background: #0052a3;
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .step-content {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .step-image {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        /* Install prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #003366;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        .install-text {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .install-button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .close-install {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        /* Loading and error states */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .route-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header-content {
+                padding: 0 2rem;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .route-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .step-navigation {
+                max-width: 600px;
+                margin: 0 auto 2rem;
+            }
+            
+            .step-content {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        button:focus,
+        .route-card:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Schiphol Navigatie</div>
+            <button class="back-button" id="backButton" style="display: none;" aria-label="Terug naar routelijst">
+                ← Terug
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <!-- Route selection screen -->
+        <section class="route-selection" id="routeSelection">
+            <h1>Kies een route</h1>
+            <div class="loading" id="loadingMessage">Routes laden...</div>
+            <div class="route-list" id="routeList" role="list" aria-label="Beschikbare routes">
+                <!-- Routes will be populated here -->
+            </div>
+        </section>
+
+        <!-- Route details screen -->
+        <section class="route-details" id="routeDetails" aria-live="polite">
+            <div class="route-header">
+                <h1 class="route-title" id="routeTitle">Route</h1>
+                <div class="step-counter" id="stepCounter">Stap 1 van 1</div>
+            </div>
+            
+            <nav class="step-navigation" aria-label="Stap navigatie">
+                <button class="nav-button" id="prevButton" aria-label="Vorige stap">Vorige</button>
+                <button class="nav-button" id="nextButton" aria-label="Volgende stap">Volgende</button>
+            </nav>
+            
+            <div class="step-content" id="stepContent">
+                <img class="step-image" id="stepImage" alt="" />
+                <p class="step-description" id="stepDescription"></p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Install prompt -->
+    <div class="install-prompt" id="installPrompt" role="dialog" aria-labelledby="installText">
+        <div class="install-text" id="installText">
+            Installeer deze app op je telefoon voor eenvoudige toegang!
+        </div>
+        <button class="install-button" id="installButton">Installeren</button>
+        <button class="close-install" id="closeInstall" aria-label="Sluiten">&times;</button>
+    </div>
+
+    <script>
+        // Application state
+        let routes = [];
+        let currentRoute = null;
+        let currentStepIndex = 0;
+        let deferredPrompt = null;
+
+        // DOM elements
+        const elements = {
+            routeSelection: document.getElementById('routeSelection'),
+            routeDetails: document.getElementById('routeDetails'),
+            routeList: document.getElementById('routeList'),
+            loadingMessage: document.getElementById('loadingMessage'),
+            backButton: document.getElementById('backButton'),
+            routeTitle: document.getElementById('routeTitle'),
+            stepCounter: document.getElementById('stepCounter'),
+            prevButton: document.getElementById('prevButton'),
+            nextButton: document.getElementById('nextButton'),
+            stepImage: document.getElementById('stepImage'),
+            stepDescription: document.getElementById('stepDescription'),
+            installPrompt: document.getElementById('installPrompt'),
+            installButton: document.getElementById('installButton'),
+            closeInstall: document.getElementById('closeInstall')
+        };
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Handle install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallPrompt();
+        });
+
+        // Initialize the application
+        async function initializeApp() {
+            try {
+                await loadRoutes();
+                renderRouteList();
+                setupEventListeners();
+            } catch (error) {
+                showError('Fout bij het laden van de routes: ' + error.message);
+            }
+        }
+
+        // Load routes from JSON file
+        async function loadRoutes() {
+            try {
+                const response = await fetch('/routes.json');
+                if (!response.ok) {
+                    throw new Error('Routes konden niet worden geladen');
+                }
+                const data = await response.json();
+                routes = data.routes;
+                elements.loadingMessage.style.display = 'none';
+            } catch (error) {
+                elements.loadingMessage.style.display = 'none';
+                throw error;
+            }
+        }
+
+        // Render the route selection list
+        function renderRouteList() {
+            elements.routeList.innerHTML = '';
+            
+            routes.forEach((route, index) => {
+                const routeCard = document.createElement('button');
+                routeCard.className = 'route-card';
+                routeCard.textContent = route.name;
+                routeCard.setAttribute('role', 'listitem');
+                routeCard.setAttribute('aria-label', `Selecteer route: ${route.name}`);
+                routeCard.addEventListener('click', () => selectRoute(index));
+                
+                // Add keyboard navigation
+                routeCard.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectRoute(index);
+                    }
+                });
+                
+                elements.routeList.appendChild(routeCard);
+            });
+        }
+
+        // Select a route and show its details
+        function selectRoute(routeIndex) {
+            currentRoute = routes[routeIndex];
+            currentStepIndex = 0;
+            
+            // Update UI
+            elements.routeSelection.style.display = 'none';
+            elements.routeDetails.classList.add('active');
+            elements.backButton.style.display = 'block';
+            
+            // Update route title
+            elements.routeTitle.textContent = currentRoute.name;
+            
+            // Show first step
+            updateStep();
+        }
+
+        // Update the current step display
+        function updateStep() {
+            const step = currentRoute.steps[currentStepIndex];
+            const totalSteps = currentRoute.steps.length;
+            
+            // Update step counter
+            elements.stepCounter.textContent = `Stap ${currentStepIndex + 1} van ${totalSteps}`;
+            
+            // Update step content
+            elements.stepImage.src = step.image;
+            elements.stepImage.alt = `Stap ${currentStepIndex + 1}: ${step.description}`;
+            elements.stepDescription.textContent = step.description;
+            
+            // Update navigation buttons
+            elements.prevButton.disabled = currentStepIndex === 0;
+            elements.nextButton.disabled = currentStepIndex === totalSteps - 1;
+            
+            // Update button text for last step
+            if (currentStepIndex === totalSteps - 1) {
+                elements.nextButton.textContent = 'Klaar';
+            } else {
+                elements.nextButton.textContent = 'Volgende';
+            }
+        }
+
+        // Go to previous step
+        function previousStep() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                updateStep();
+            }
+        }
+
+        // Go to next step
+        function nextStep() {
+            if (currentStepIndex < currentRoute.steps.length - 1) {
+                currentStepIndex++;
+                updateStep();
+            } else {
+                // Route completed, go back to route selection
+                goBackToRouteSelection();
+            }
+        }
+
+        // Go back to route selection
+        function goBackToRouteSelection() {
+            elements.routeDetails.classList.remove('active');
+            elements.routeSelection.style.display = 'block';
+            elements.backButton.style.display = 'none';
+            currentRoute = null;
+            currentStepIndex = 0;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation buttons
+            elements.backButton.addEventListener('click', goBackToRouteSelection);
+            elements.prevButton.addEventListener('click', previousStep);
+            elements.nextButton.addEventListener('click', nextStep);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (currentRoute) {
+                    if (e.key === 'ArrowLeft' && !elements.prevButton.disabled) {
+                        previousStep();
+                    } else if (e.key === 'ArrowRight' && !elements.nextButton.disabled) {
+                        nextStep();
+                    } else if (e.key === 'Escape') {
+                        goBackToRouteSelection();
+                    }
+                }
+            });
+            
+            // Install prompt
+            elements.installButton.addEventListener('click', installApp);
+            elements.closeInstall.addEventListener('click', hideInstallPrompt);
+        }
+
+        // Show install prompt
+        function showInstallPrompt() {
+            // Only show if not already installed
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                elements.installPrompt.classList.add('show');
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    hideInstallPrompt();
+                }, 10000);
+            }
+        }
+
+        // Hide install prompt
+        function hideInstallPrompt() {
+            elements.installPrompt.classList.remove('show');
+        }
+
+        // Install the app
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+            hideInstallPrompt();
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            elements.routeSelection.insertBefore(errorDiv, elements.routeList);
+        }
+
+        // Handle image loading errors
+        document.addEventListener('error', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1MCIgdmlld0JveD0iMCAwIDQwMCAyNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjUwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xODAgMTAwSDIyMFYxNDBIMTgwVjEwMFoiIGZpbGw9IiNDQ0MiLz4KPHA+SW1hZ2UgaW5nZWxhZGVuPC9wPgo8L3N2Zz4K';
+                e.target.alt = 'Afbeelding kon niet worden geladen';
+            }
+        }, true);
+    </script>
+</body>
+</html>

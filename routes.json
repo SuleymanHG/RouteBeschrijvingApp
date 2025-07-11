@@ -1,0 +1,214 @@
+{
+  "routes": [
+    {
+      "id": "route1",
+      "name": "Route naar Gate A",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/gateA_step1.jpg",
+          "description": "Loop vanaf de hoofdingang rechtdoor tot aan de informatiebalie."
+        },
+        {
+          "step": 2,
+          "image": "images/gateA_step2.jpg",
+          "description": "Sla linksaf en neem de roltrap naar boven."
+        },
+        {
+          "step": 3,
+          "image": "images/gateA_step3.jpg",
+          "description": "Volg de borden richting Gate A1-A28."
+        }
+      ]
+    },
+    {
+      "id": "route2",
+      "name": "Route naar Gate B",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/gateB_step1.jpg",
+          "description": "Ga vanaf de security check rechtdoor naar de centrale hal."
+        },
+        {
+          "step": 2,
+          "image": "images/gateB_step2.jpg",
+          "description": "Neem de moving walkway richting B-pier."
+        },
+        {
+          "step": 3,
+          "image": "images/gateB_step3.jpg",
+          "description": "Volg de gele lijn op de vloer naar Gate B1-B28."
+        }
+      ]
+    },
+    {
+      "id": "route3",
+      "name": "Route naar Gate C",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/gateC_step1.jpg",
+          "description": "Loop vanuit de centrale hal richting de C-pier."
+        },
+        {
+          "step": 2,
+          "image": "images/gateC_step2.jpg",
+          "description": "Neem de lift of roltrap naar beneden."
+        },
+        {
+          "step": 3,
+          "image": "images/gateC_step3.jpg",
+          "description": "Volg de blauwe bordjes naar Gate C1-C28."
+        }
+      ]
+    },
+    {
+      "id": "route4",
+      "name": "Route naar Baggage Claim",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/baggage_step1.jpg",
+          "description": "Na aankomst volg de borden 'Baggage Claim'."
+        },
+        {
+          "step": 2,
+          "image": "images/baggage_step2.jpg",
+          "description": "Neem de roltrap naar beneden naar Arrivals."
+        },
+        {
+          "step": 3,
+          "image": "images/baggage_step3.jpg",
+          "description": "Zoek je bagage band op het informatiescherm."
+        }
+      ]
+    },
+    {
+      "id": "route5",
+      "name": "Route naar Security Check",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/security_step1.jpg",
+          "description": "Ga na check-in richting de security controle."
+        },
+        {
+          "step": 2,
+          "image": "images/security_step2.jpg",
+          "description": "Houd je boarding pass en ID-kaart klaar."
+        },
+        {
+          "step": 3,
+          "image": "images/security_step3.jpg",
+          "description": "Volg de instructies van het security personeel."
+        }
+      ]
+    },
+    {
+      "id": "route6",
+      "name": "Route naar Schiphol Lounge",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/lounge_step1.jpg",
+          "description": "Ga na security check richting de centrale hal."
+        },
+        {
+          "step": 2,
+          "image": "images/lounge_step2.jpg",
+          "description": "Zoek de borden 'Schiphol Lounge' op."
+        },
+        {
+          "step": 3,
+          "image": "images/lounge_step3.jpg",
+          "description": "Neem de lift naar de 3e verdieping."
+        }
+      ]
+    },
+    {
+      "id": "route7",
+      "name": "Route naar Douane",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/customs_step1.jpg",
+          "description": "Na baggage claim kies 'Niets aan te geven' of 'Aan te geven'."
+        },
+        {
+          "step": 2,
+          "image": "images/customs_step2.jpg",
+          "description": "Loop door de groene doorgang voor EU-reizigers."
+        },
+        {
+          "step": 3,
+          "image": "images/customs_step3.jpg",
+          "description": "Verlaat via de aankomsthal naar de openbare ruimte."
+        }
+      ]
+    },
+    {
+      "id": "route8",
+      "name": "Route naar Parkeergarage",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/parking_step1.jpg",
+          "description": "Volg de borden 'Parkeren' vanaf de aankomsthal."
+        },
+        {
+          "step": 2,
+          "image": "images/parking_step2.jpg",
+          "description": "Neem de lift of roltrap naar de gewenste verdieping."
+        },
+        {
+          "step": 3,
+          "image": "images/parking_step3.jpg",
+          "description": "Onthoud je parkeervak nummer en verdieping."
+        }
+      ]
+    },
+    {
+      "id": "route9",
+      "name": "Route naar Restaurant Area",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/restaurant_step1.jpg",
+          "description": "Ga na security check naar de centrale hal."
+        },
+        {
+          "step": 2,
+          "image": "images/restaurant_step2.jpg",
+          "description": "Zoek het restaurant overzicht op de info-zuilen."
+        },
+        {
+          "step": 3,
+          "image": "images/restaurant_step3.jpg",
+          "description": "Volg de bordjes naar je gewenste restaurant."
+        }
+      ]
+    },
+    {
+      "id": "route10",
+      "name": "Route naar Tax Free Shopping",
+      "steps": [
+        {
+          "step": 1,
+          "image": "images/shop_step1.jpg",
+          "description": "Ga na security check richting de shopping area."
+        },
+        {
+          "step": 2,
+          "image": "images/shop_step2.jpg",
+          "description": "Zoek de Tax Free winkels in de centrale hal."
+        },
+        {
+          "step": 3,
+          "image": "images/shop_step3.jpg",
+          "description": "Houd je boarding pass klaar voor Tax Free aankopen."
+        }
+      ]
+    }
+  ]
+}   
